@@ -1,7 +1,7 @@
 const options = {
     targetSelector: '#scene',
-    width: 800, height: 600,
-    backgroundColor: 0x222222
+    width: 1280, height: 900,
+    backgroundColor: 0xeeeeee
 }
 
 const renderer = new THREE.WebGLRenderer(
@@ -26,7 +26,7 @@ camera.position.x = 1.5;
 camera.position.y = 3.5;
 
 const light = new THREE.HemisphereLight(
-    0xFFFFFF, 0x080820, 2
+    0xFFFFFF, 0xFFFFFF, 4.28
 );
 
 scene.add(light)

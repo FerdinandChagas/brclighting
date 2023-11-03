@@ -1,0 +1,11 @@
+Model Information:
+* title:	9 storey residential building
+* source:	https://sketchfab.com/3d-models/9-storey-residential-building-4407c6bd0d944a9c8ad0b9c08e65a1da
+* author:	bean(alwayshasbean) (https://sketchfab.com/alwayshasbean)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "9 storey residential building" (https://sketchfab.com/3d-models/9-storey-residential-building-4407c6bd0d944a9c8ad0b9c08e65a1da) by bean(alwayshasbean) (https://sketchfab.com/alwayshasbean) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

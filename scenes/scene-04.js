@@ -1,88 +1,40 @@
-
-const material = new THREE.MeshLambertMaterial({ color: 0x777777});
-
-const cube = new THREE.Mesh(
-    new THREE.BoxBufferGeometry(1,1,1), 
-    material
+const material = new THREE.MeshLambertMaterial(
+    { 
+        color: 0x12127d,
+        side: THREE.DoubleSide,
+        wireframe: true
+    }
 );
 
-scene.add(cube);
+const loader = new THREE.GLTFLoader();
 
-const circle = new THREE.Mesh(
-    new THREE.CircleBufferGeometry(
-        0.5, 20    
-    ),
-    material
-);
+let model = new THREE.Object3D();
 
-circle.position.x= -2;
-circle.rotation.x = THREE.MathUtils.degToRad(-90);
-scene.add(circle);
+loader.load( 'buildings/complex_building/scene.gltf', function ( gltf ) {
+    model = gltf.scene
+    model.scale.set(0.2,0.2,0.2)
+	scene.add( model );
 
-const cone = new THREE.Mesh(
-    new THREE.ConeBufferGeometry(
-        0.3, 0.5    
-    ),
-    material
-);
+}, undefined, function ( error ) {
 
-cone.position.x= -2;
-cone.position.y = 2
+	console.error( error );
 
+} );
 
-scene.add(cone);
+const points = [];
+for ( let i = 0; i < 11; i ++ ) {
+	points.push( new THREE.Vector2( (Math.cos( i * 0.2 ) * 10 + 5)*(-1), ( i - 5 ) * 2 ));
+}
+const geometry = new THREE.LatheGeometry( points );
+const lathe = new THREE.Mesh( geometry, material );
 
-const esfera = new THREE.Mesh(
-    new THREE.SphereGeometry(
-        1, 32, 32
-    ),
-    material
-)
+lathe.scale.set(0.1,0.1,0.1);
+lathe.position.set(1.25,6.2,-1.7);
 
-esfera.position.x = -3
-esfera.position.y = 3
+scene.add( lathe );
 
-scene.add(esfera)
-
-const cilindro = new THREE.Mesh(
-    new THREE.CylinderBufferGeometry(
-        0.5, 0.5, 1
-    ),
-    material
-)
-
-cilindro.position.x = 2;
-cilindro.position.y = 0;
-scene.add(cilindro)
-
-var points = [];
-points.push(new THREE.Vector3(0, 0, 0));
-points.push(new THREE.Vector3(1, 2, 0));
-points.push(new THREE.Vector3(2, 2, 0));
-points.push(new THREE.Vector3(3, 0, 0));
-
-// Crie uma curva de Bézier com os pontos de controle
-var bezierCurve = new THREE.CubicBezierCurve3(points[0], points[1], points[2], points[3]);
-
-// Defina o raio e o número de segmentos para o tubo
-var radius = 0.1;
-var segments = 20;
-
-// Crie a geometria do tubo ao longo da curva de Bézier
-var tubeGeometry = new THREE.TubeGeometry(bezierCurve, segments, radius, 8, false);
-
-// Crie uma malha usando a geometria do tubo e o material
-var jarMesh = new THREE.Mesh(tubeGeometry, material);
-
-// Adicione a malha à cena
-scene.add(jarMesh);
-
-
-
-x3.add(cube, { label: 'cube'});
-x3.add(cone, { label: 'cone'});
-x3.add(esfera, { label: 'esfera'});
-x3.add(cilindro, { label: 'cilindo'});
+x3.add(model, { label: 'Prédio'});
+x3.add(lathe, { label: 'Campo'});
 
 renderer.setAnimationLoop(() => {
 
