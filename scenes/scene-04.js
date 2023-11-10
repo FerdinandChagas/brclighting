@@ -1,3 +1,19 @@
+function calcularValor(A2, I1, I2, F2, F3, H8) {
+    if (A2 === "") {
+        return "";
+    } else if (A2 === 0) {
+        return H8; // Substitua 'dadosEntrada.DE.H8' pelo valor adequado do seu objeto de dados
+    } else {
+        let temp = F2 - Math.sqrt(Math.pow(I1, 2) - Math.pow((F3 - A2), 2));
+        if (A2 === I2 || temp < 0) {
+            return 0;
+        } else {
+            return temp.toFixed(2);
+        }
+    }
+}
+
+
 const material = new THREE.MeshLambertMaterial(
     { 
         color: 0x12127d,
@@ -13,7 +29,7 @@ let model = new THREE.Object3D();
 loader.load( 'buildings/complex_building/scene.gltf', function ( gltf ) {
     model = gltf.scene
     model.scale.set(0.2,0.2,0.2)
-	scene.add( model );
+	
 
 }, undefined, function ( error ) {
 
@@ -22,18 +38,23 @@ loader.load( 'buildings/complex_building/scene.gltf', function ( gltf ) {
 } );
 
 const points = [];
-for ( let i = 0; i < 11; i ++ ) {
-	points.push( new THREE.Vector2( (Math.cos( i * 0.2 ) * 10 + 5)*(-1), ( i - 5 ) * 2 ));
+let I1 = 30;
+let I2 = 15;
+let F2 = 28.19;
+let F3 = 25.25;
+let H8 = 12;
+for ( let d = 0.0; d <= 15.0; d=d+0.1 ) {
+	points.push( new THREE.Vector2(d, calcularValor(d,I1, I2, F2, F3)));
 }
-const geometry = new THREE.LatheGeometry( points );
+const geometry = new THREE.LatheGeometry( points , 48);
 const lathe = new THREE.Mesh( geometry, material );
 
 lathe.scale.set(0.1,0.1,0.1);
-lathe.position.set(1.25,6.2,-1.7);
+
 
 scene.add( lathe );
 
-x3.add(model, { label: 'Prédio'});
+//x3.add(model, { label: 'Prédio'});
 x3.add(lathe, { label: 'Campo'});
 
 renderer.setAnimationLoop(() => {

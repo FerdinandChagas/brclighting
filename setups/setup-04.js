@@ -21,9 +21,9 @@ const camera = new THREE.PerspectiveCamera(
     50, options.width / options.height
 );
 
-camera.position.z = 8.5;
-camera.position.x = 1.5;
-camera.position.y = 3.5;
+camera.position.x = 8;
+camera.position.y = 7.18;
+camera.position.z = 2.6;
 
 const light = new THREE.HemisphereLight(
     0xFFFFFF, 0xFFFFFF, 4.28
