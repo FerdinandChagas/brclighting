@@ -89,19 +89,48 @@ function adicionarCorte( raio, dpi, h, graus){
     let radianos = (graus * Math.PI) / 180;
     const geometry = new THREE.LatheGeometry( points , 48, radianos, 0.001);
     const lathe = new THREE.Mesh( geometry, material );
-    lathe.position.z=2.6;
-    lathe.position.x=1.5;
+    return lathe;
+}
+
+function adicionarCorte( raio, dpi, h, graus){
+    const points = [];
+    let hcer = calculaHCE(h, dpi, raio);
+    let dcer = calculaDPCE(dpi, raio, hcer);
+    let radianos = (graus * Math.PI) / 180;
+    console.log("hcer = "+hcer);
+    console.log("dcer = "+dcer);
+    for ( let d = 0.0; d <= dpi; d=d+0.1 ) {
+        cp = calcularPontos(d,raio, dpi, hcer, dcer, h);
+        if(cp>=0){
+            vector2 = new THREE.Vector2(d, cp)
+// Convertendo para um Vector3 com inclinação em relação ao eixo z
+const vector3 = new THREE.Vector3(vector2.x, vector2.y, 0);
+
+// Aplicando a rotação em relação ao eixo z
+vector3.applyAxisAngle(new THREE.Vector3(0, 0, 1), theta);
+            points.push( vector3);
+            console.log(cp);
+        } 
+    }
+    // Convertendo para um Vector3 com inclinação em relação ao eixo z
+    const vector3 = new THREE.Vector3(vector2.x, vector2.y, 0);
+
+    // Aplicando a rotação em relação ao eixo z
+    vector3.applyAxisAngle(new THREE.Vector3(0, 0, 1), theta);
+    
+    const geometry = new THREE.LatheGeometry( points , 48, radianos, 0.001);
+    const lathe = new THREE.Mesh( geometry, material );
     return lathe;
 }
 
 const form = new THREE.PlaneGeometry(15,20);
 const plane = new THREE.Mesh(form, material2);
+plane.position.z=-2.6;
+plane.position.x=-1.5;
 
 const boxgeometry = new THREE.BoxGeometry(4,4,5);
 const box = new THREE.Mesh(boxgeometry, material2);
-box.position.z=2;
-box.position.x=0.5;
-box.position.y=2;
+
 
 
 plane.rotation.x = Math.PI /2;
@@ -117,15 +146,17 @@ const corteB = adicionarCorte(45, 11.6, 7, 309);
 
 scene.add( corteBC );
 scene.add( corteC );
-scene.add( corteCD );
+/*scene.add( corteCD );
 scene.add( corteD );
 scene.add( corteAD );
 scene.add( corteA );
 scene.add( corteAB );
 scene.add( corteX );
-scene.add( corteB );
+scene.add( corteB );*/
 scene.add( plane );
 scene.add( box );
+
+
 
 //x3.add(model, { label: 'Prédio'});
 x3.add(corteAB, { label: 'Corte1'});
