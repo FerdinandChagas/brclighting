@@ -25,7 +25,7 @@ camera.position.x = 8;
 camera.position.y = 18.18;
 camera.position.z = 2.6;
 
-const light = new THREE.AmbientLight(0xffffff, 0.5);
+const light = new THREE.AmbientLight(0xffffff, 4.8);
 
 scene.add(light)
 

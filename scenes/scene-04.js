@@ -3,6 +3,10 @@ function posicionarObj( px, py, dx, dy, obj){
     obj.position.x= dy-(py/2);
 }
 
+function grausParaRadianos(graus) {
+    return (graus * Math.PI) / 180;
+}
+
 function calculaTheta(altura, dpi, raio){
     let alpha = Math.round(Math.atan(altura / dpi) * (180 / Math.PI) * 10000) / 10000;
     console.log("alpha = "+alpha);
@@ -47,7 +51,7 @@ const material = new THREE.MeshLambertMaterial(
         color: 0x12127d,
         side: THREE.DoubleSide,
         transparent: true, // torna o material transparente
-        opacity: 1, // define o nível de transparência (0: completamente transparente, 1: opaco)
+        opacity: 0.6, // define o nível de transparência (0: completamente transparente, 1: opaco)
         wireframe: false, // não exibir wireframe
     }
 );
@@ -60,20 +64,25 @@ const material2 = new THREE.MeshLambertMaterial(
     }
 );
 
-const loader = new THREE.GLTFLoader();
+const loader = new THREE.STLLoader();
 
 let model = new THREE.Object3D();
 
-loader.load( 'buildings/complex_building/scene.gltf', function ( gltf ) {
-    model = gltf.scene
-    model.scale.set(0.2,0.2,0.2)
-	
+let predio = new  THREE.Object3D();
 
-}, undefined, function ( error ) {
+loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
+    const material = new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: true, }); // Cor do material
+    const predio = new THREE.Mesh(geometry, material);
+    predio.rotation.x = grausParaRadianos(-90);
+    predio.rotation.z = grausParaRadianos(-68);
+    predio.position.y = -31.5;
+    predio.position.z = 3.5;
+    predio.position.x = -14.5;
+    predio.scale.set(1.04, 1.04, 1.04);
+    scene.add(predio);
+});
 
-	console.error( error );
 
-} );
 
 function adicionarCorte( raio, dpi, h, graus){
     const points = [];
@@ -199,12 +208,14 @@ scene.add( corteAB );
 scene.add( corteX );
 scene.add( corteB );*/
 scene.add(model);
-scene.add( box );
+//scene.add( box );
 
 x3.add(mesh1, { label: 'Corte1'});
 x3.add(mesh2, { label: 'Corte2'});
 x3.add(mesh3, { label: 'Corte3'});
 x3.add(mesh4, { label: 'Corte4'});
+x3.add(predio, {label: 'Prédio'});
+x3.add(box, { label: 'Box'});
 
 renderer.setAnimationLoop(() => {
 
