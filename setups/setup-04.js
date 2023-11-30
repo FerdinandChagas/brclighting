@@ -25,11 +25,13 @@ camera.position.x = 8;
 camera.position.y = 18.18;
 camera.position.z = 2.6;
 
-const light = new THREE.HemisphereLight(
-    0xFFFFFF, 0xFFFFFF, 4.28
-);
+const light = new THREE.AmbientLight(0xffffff, 0.5);
 
 scene.add(light)
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(0, 2, 0);
+scene.add(directionalLight);
 
 const x3 = new THREEx3(
     {
