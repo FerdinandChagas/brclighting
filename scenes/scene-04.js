@@ -210,12 +210,12 @@ scene.add( corteB );*/
 scene.add(model);
 //scene.add( box );
 
-x3.add(mesh1, { label: 'Corte1'});
+/*x3.add(mesh1, { label: 'Corte1'});
 x3.add(mesh2, { label: 'Corte2'});
 x3.add(mesh3, { label: 'Corte3'});
 x3.add(mesh4, { label: 'Corte4'});
 x3.add(predio, {label: 'Prédio'});
-x3.add(box, { label: 'Box'});
+x3.add(box, { label: 'Box'});*/
 
 renderer.setAnimationLoop(() => {
 
