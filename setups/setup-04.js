@@ -29,8 +29,8 @@ const light = new THREE.AmbientLight(0xffffff, 4.8);
 
 scene.add(light)
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight.position.set(0, 2, 0);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+directionalLight.position.set(1, 3, 6);
 scene.add(directionalLight);
 
 const x3 = new THREEx3(

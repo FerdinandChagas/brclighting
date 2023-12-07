@@ -71,7 +71,7 @@ let model = new THREE.Object3D();
 let predio = new  THREE.Object3D();
 
 loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
-    const material = new THREE.MeshLambertMaterial({ color: 0x121212, wireframe: false, }); // Cor do material
+    const material = new THREE.MeshLambertMaterial({ color: 0x141414, wireframe: false, }); // Cor do material
     const predio = new THREE.Mesh(geometry, material);
     predio.rotation.x = grausParaRadianos(-90);
     predio.rotation.z = grausParaRadianos(-68);
