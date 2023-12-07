@@ -50,9 +50,9 @@ const material = new THREE.MeshLambertMaterial(
     { 
         color: 0x12127d,
         side: THREE.DoubleSide,
-        transparent: true, // torna o material transparente
-        opacity: 0.6, // define o nível de transparência (0: completamente transparente, 1: opaco)
-        wireframe: false, // não exibir wireframe
+        transparent: true, 
+        opacity: 0.6, 
+        wireframe: false, 
     }
 );
 
@@ -71,14 +71,14 @@ let model = new THREE.Object3D();
 let predio = new  THREE.Object3D();
 
 loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
-    const material = new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: true, }); // Cor do material
+    const material = new THREE.MeshLambertMaterial({ color: 0x121212, wireframe: false, }); // Cor do material
     const predio = new THREE.Mesh(geometry, material);
     predio.rotation.x = grausParaRadianos(-90);
     predio.rotation.z = grausParaRadianos(-68);
-    predio.position.y = -31.5;
-    predio.position.z = 3.5;
-    predio.position.x = -14.5;
-    predio.scale.set(1.04, 1.04, 1.04);
+    predio.position.y = -29.4;
+    predio.position.z = 3.4;
+    predio.position.x = -13.6;
+    predio.scale.set(0.98, 0.98, 0.98);
     scene.add(predio);
 });
 
@@ -213,9 +213,9 @@ scene.add(model);
 /*x3.add(mesh1, { label: 'Corte1'});
 x3.add(mesh2, { label: 'Corte2'});
 x3.add(mesh3, { label: 'Corte3'});
-x3.add(mesh4, { label: 'Corte4'});
+x3.add(mesh4, { label: 'Corte4'});*/
 x3.add(predio, {label: 'Prédio'});
-x3.add(box, { label: 'Box'});*/
+x3.add(box, { label: 'Box'});
 
 renderer.setAnimationLoop(() => {
 
