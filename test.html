@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Pontos em um Plano 3D</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script>
+        // Configuração básica
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Criando um plano no y=0
+        const planeGeometry = new THREE.PlaneGeometry(10, 10);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        scene.add(plane);
+
+        // Criando um cubo
+        const cubeGeometry = new THREE.BoxGeometry();
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+        // Configurando o raio para interações do mouse
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        // Evento de clique do mouse
+        window.addEventListener('click', onMouseClick);
+
+        // Atualizações de tamanho da janela
+        window.addEventListener('resize', onWindowResize);
+
+        // Função principal de renderização
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // Função de clique do mouse
+        function onMouseClick(event) {
+            // Calcula as coordenadas do mouse em relação ao tamanho da janela
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+            // Atualiza o raio com as novas coordenadas do mouse
+            raycaster.setFromCamera(mouse, camera);
+
+            // Encontra objetos intersectados pelo raio
+            const intersects = raycaster.intersectObjects([plane]);
+
+            // Verifica se há interseções e imprime as coordenadas do ponto selecionado
+            if (intersects.length > 0) {
+                const selectedPoint = intersects[0].point;
+                console.log('Coordenadas do ponto selecionado:', selectedPoint.x, selectedPoint.y, selectedPoint.z);
+            }
+        }
+
+        // Atualiza o tamanho da tela ao redimensionar a janela
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Posiciona a câmera
+        camera.position.set(0, 5, 10);
+        camera.lookAt(0, 0, 0);
+
+        // Inicialização
+        animate();
+    </script>
+</body>
+</html>

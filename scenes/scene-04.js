@@ -1,3 +1,22 @@
+function checkCollision(cube, mesh) {
+    const cubeBox = new THREE.Box3().setFromObject(cube);
+    const boxDimensions = new THREE.Vector3();
+   
+    // Loop through all vertices of the mesh and check for collision
+    const vertices = mesh.geometry.attributes.position.array;
+    
+    for (let i = 0; i < vertices.length; i+=3) {
+        const vertex = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
+      
+      if (cubeBox.containsPoint(vertex)) {
+        console.log("Colisão detectada! no", vertex);
+        return true; // Collision detected
+      }
+    }
+    
+    return false; // No collision
+  }
+
 function posicionarObj( px, py, dx, dy, obj){
     obj.position.z= dx-(px/2);
     obj.position.x= dy-(py/2);
@@ -9,9 +28,9 @@ function grausParaRadianos(graus) {
 
 function calculaTheta(altura, dpi, raio){
     let alpha = Math.round(Math.atan(altura / dpi) * (180 / Math.PI) * 10000) / 10000;
-    console.log("alpha = "+alpha);
+    //console.log("alpha = "+alpha);
     let beta = Math.round(Math.acos(Math.sqrt(Math.pow(altura, 2) + Math.pow(dpi, 2)) / (2 * raio)) * (180 / Math.PI) * 1000) / 1000;
-    console.log("beta = "+beta);
+    //console.log("beta = "+beta);
     let theta = 180-(alpha+beta)
     return theta
 }
@@ -79,7 +98,7 @@ loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
     predio.position.z = 3.4;
     predio.position.x = -13.6;
     predio.scale.set(0.98, 0.98, 0.98);
-    scene.add(predio);
+    //scene.add(predio);
 });
 
 
@@ -207,8 +226,61 @@ scene.add( corteA );
 scene.add( corteAB );
 scene.add( corteX );
 scene.add( corteB );*/
-scene.add(model);
-//scene.add( box );
+//scene.add(model);
+scene.add( box );
+
+// Configurando o raio para interações do mouse
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+// Evento de clique do mouse
+window.addEventListener('click', onMouseClick);
+
+// Atualizações de tamanho da janela
+window.addEventListener('resize', onWindowResize);
+
+// Criando um plano no y=0
+const planeGeometry1 = new THREE.PlaneGeometry(20, 15);
+const planeMaterial1 = new THREE.MeshBasicMaterial({ color: 0xFF0000, side: THREE.DoubleSide, transparent: true, opacity: 0.4,});
+const plane1 = new THREE.Mesh(planeGeometry1, planeMaterial1);
+plane1.rotation.x = grausParaRadianos(90);
+plane1.position.set(-2.5, 0, 1.5);
+//scene.add(plane1)
+
+
+// Criando um plano no y=0
+const planeGeometry2 = new THREE.PlaneGeometry(20, 15);
+const planeMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00FF00, side: THREE.DoubleSide, transparent: true, opacity: 0.4,});
+const plane2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
+plane2.rotation.x = grausParaRadianos(90);
+plane2.position.set(-2.5, 4, 1.5);
+
+// Função de clique do mouse
+function onMouseClick(event) {
+    // Calcula as coordenadas do mouse em relação ao tamanho da janela
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    // Atualiza o raio com as novas coordenadas do mouse
+    raycaster.setFromCamera(mouse, camera);
+
+    // Encontra objetos intersectados pelo raio
+    const intersects = raycaster.intersectObjects([plane1]);
+
+    // Verifica se há interseções e imprime as coordenadas do ponto selecionado
+    if (intersects.length > 0) {
+        const selectedPoint = intersects[0].point;
+        //console.log('Coordenadas do ponto selecionado:', selectedPoint.x, selectedPoint.y, selectedPoint.z);
+    }
+}
+
+// Atualiza o tamanho da tela ao redimensionar a janela
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 
 /*x3.add(mesh1, { label: 'Corte1'});
 x3.add(mesh2, { label: 'Corte2'});
@@ -217,10 +289,17 @@ x3.add(mesh4, { label: 'Corte4'});*/
 x3.add(predio, {label: 'Prédio'});
 x3.add(box, { label: 'Box'});
 
+checkCollision(box, mesh1);
+checkCollision(box, mesh2);
+checkCollision(box, mesh3);
+checkCollision(box, mesh4);
+
+
+
 renderer.setAnimationLoop(() => {
 
     x3.tick();
-
+    
     x3.fps(() => {
         renderer.render(scene, camera)
     })
