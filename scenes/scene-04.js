@@ -1,17 +1,20 @@
 function checkCollision(cube, mesh) {
     const cubeBox = new THREE.Box3().setFromObject(cube);
-    const boxDimensions = new THREE.Vector3();
-   
-    // Loop through all vertices of the mesh and check for collision
     const vertices = mesh.geometry.attributes.position.array;
+    const margin = 0.02;
+
+    // Loop through all vertices of the mesh and check for collision
+    
     
     for (let i = 0; i < vertices.length; i+=3) {
         const vertex = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
       
-      if (cubeBox.containsPoint(vertex)) {
-        console.log("Colisão detectada! no", vertex);
-        return true; // Collision detected
-      }
+        const expandedCubeBox = new THREE.Box3().copy(cubeBox).expandByScalar(margin);
+
+        if (expandedCubeBox.containsPoint(vertex)) {
+          console.log("Colisão detectada! no", vertex);
+          return true; // Collision detected
+        }
     }
     
     return false; // No collision
@@ -75,7 +78,47 @@ const material = new THREE.MeshLambertMaterial(
     }
 );
 
+const material1 = new THREE.MeshLambertMaterial(
+    { 
+        color: 0x12127d,
+        side: THREE.DoubleSide,
+        transparent: true, 
+        opacity: 0.6, 
+        wireframe: false, 
+    }
+);
+
 const material2 = new THREE.MeshLambertMaterial(
+    { 
+        color: 0x12127d,
+        side: THREE.DoubleSide,
+        transparent: true, 
+        opacity: 0.6, 
+        wireframe: false, 
+    }
+);
+
+const material3 = new THREE.MeshLambertMaterial(
+    { 
+        color: 0x12127d,
+        side: THREE.DoubleSide,
+        transparent: true, 
+        opacity: 0.6, 
+        wireframe: false, 
+    }
+);
+
+const material4 = new THREE.MeshLambertMaterial(
+    { 
+        color: 0x12127d,
+        side: THREE.DoubleSide,
+        transparent: true, 
+        opacity: 0.6, 
+        wireframe: false, 
+    }
+);
+
+const material_box = new THREE.MeshLambertMaterial(
     { 
         color: 0x222222,
         side: THREE.DoubleSide,
@@ -140,7 +183,7 @@ function surfaceFunction1(u, v, target) {
     );
   }
 const surfaceGeometry1 = new THREE.ParametricGeometry(surfaceFunction1, 50, 10);
-const mesh1 = new THREE.Mesh(surfaceGeometry1, material);
+const mesh1 = new THREE.Mesh(surfaceGeometry1, material1);
 scene.add(mesh1);
 
 const curve3 = new THREE.CatmullRomCurve3();
@@ -159,7 +202,7 @@ function surfaceFunction2(u, v, target) {
     );
   }
 const surfaceGeometry2 = new THREE.ParametricGeometry(surfaceFunction2, 50, 10);
-const mesh2 = new THREE.Mesh(surfaceGeometry2, material);
+const mesh2 = new THREE.Mesh(surfaceGeometry2, material2);
 scene.add(mesh2);
 
 const curve5 = new THREE.CatmullRomCurve3();
@@ -178,7 +221,7 @@ function surfaceFunction3(u, v, target) {
     );
   }
 const surfaceGeometry3 = new THREE.ParametricGeometry(surfaceFunction3, 50, 10);
-const mesh3 = new THREE.Mesh(surfaceGeometry3, material);
+const mesh3 = new THREE.Mesh(surfaceGeometry3, material3);
 scene.add(mesh3);
 
 const curve7 = new THREE.CatmullRomCurve3();
@@ -197,14 +240,14 @@ function surfaceFunction4(u, v, target) {
     );
   }
 const surfaceGeometry4 = new THREE.ParametricGeometry(surfaceFunction4, 50, 10);
-const mesh4 = new THREE.Mesh(surfaceGeometry4, material);
+const mesh4 = new THREE.Mesh(surfaceGeometry4, material4);
 scene.add(mesh4);
 
 const form = new THREE.PlaneGeometry(15,20);
 
 const boxgeometry = new THREE.BoxGeometry(5,4,4);
-const box = new THREE.Mesh(boxgeometry, material2);
-box.position.z=1;
+const box = new THREE.Mesh(boxgeometry, material_box);
+box.position.z=-1.5;
 box.position.y=2;
 box.position.x=-0.5;
 
@@ -250,10 +293,11 @@ plane1.position.set(-2.5, 0, 1.5);
 
 // Criando um plano no y=0
 const planeGeometry2 = new THREE.PlaneGeometry(20, 15);
-const planeMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00FF00, side: THREE.DoubleSide, transparent: true, opacity: 0.4,});
+const planeMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00FF00, side: THREE.DoubleSide, transparent: false, opacity: 0.4,});
 const plane2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
-plane2.rotation.x = grausParaRadianos(90);
-plane2.position.set(-2.5, 4, 1.5);
+
+//plane2.position.set(-2.5, 4, 1.5);
+//scene.add(plane2)
 
 // Função de clique do mouse
 function onMouseClick(event) {
@@ -285,16 +329,35 @@ function onWindowResize() {
 /*x3.add(mesh1, { label: 'Corte1'});
 x3.add(mesh2, { label: 'Corte2'});
 x3.add(mesh3, { label: 'Corte3'});
-x3.add(mesh4, { label: 'Corte4'});*/
-x3.add(predio, {label: 'Prédio'});
+x3.add(mesh4, { label: 'Corte4'});
+x3.add(predio, {label: 'Prédio'});*/
 x3.add(box, { label: 'Box'});
+//x3.add(plane2, { label: 'Corte'});
 
-checkCollision(box, mesh1);
-checkCollision(box, mesh2);
-checkCollision(box, mesh3);
-checkCollision(box, mesh4);
+teste1 = checkCollision(box, mesh1);
+teste2 = checkCollision(box, mesh2);
+teste3 = checkCollision(box, mesh3);
+teste4 = checkCollision(box, mesh4);
 
+if (teste1) {
+    // Handle collision here
+    mesh1.material.color.set(0xff0000); // Change parametric mesh color on collision
+}
 
+if (teste2) {
+    // Handle collision here
+    mesh2.material.color.set(0xff0000); // Change parametric mesh color on collision
+}
+
+if (teste3) {
+    // Handle collision here
+    mesh3.material.color.set(0xff0000); // Change parametric mesh color on collision
+}
+
+if (teste4) {
+    // Handle collision here
+    mesh4.material.color.set(0xff0000); // Change parametric mesh color on collision
+}
 
 renderer.setAnimationLoop(() => {
 
