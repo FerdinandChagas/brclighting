@@ -1,7 +1,7 @@
 function checkCollision(cube, mesh) {
     const cubeBox = new THREE.Box3().setFromObject(cube);
     const vertices = mesh.geometry.attributes.position.array;
-    const margin = 0.02;
+    const margin = 0.5;
 
     // Loop through all vertices of the mesh and check for collision
     
@@ -184,7 +184,7 @@ function surfaceFunction1(u, v, target) {
   }
 const surfaceGeometry1 = new THREE.ParametricGeometry(surfaceFunction1, 50, 10);
 const mesh1 = new THREE.Mesh(surfaceGeometry1, material1);
-scene.add(mesh1);
+//scene.add(mesh1);
 
 const curve3 = new THREE.CatmullRomCurve3();
 curve3.points = adicionarCorte(45, 11.6, 7, 309); //B
@@ -203,7 +203,7 @@ function surfaceFunction2(u, v, target) {
   }
 const surfaceGeometry2 = new THREE.ParametricGeometry(surfaceFunction2, 50, 10);
 const mesh2 = new THREE.Mesh(surfaceGeometry2, material2);
-scene.add(mesh2);
+//scene.add(mesh2);
 
 const curve5 = new THREE.CatmullRomCurve3();
 curve5.points = adicionarCorte(45, 15.5, 7, 216); // A
@@ -222,7 +222,7 @@ function surfaceFunction3(u, v, target) {
   }
 const surfaceGeometry3 = new THREE.ParametricGeometry(surfaceFunction3, 50, 10);
 const mesh3 = new THREE.Mesh(surfaceGeometry3, material3);
-scene.add(mesh3);
+//scene.add(mesh3);
 
 const curve7 = new THREE.CatmullRomCurve3();
 curve7.points = adicionarCorte(45, 14, 7, 155);  // D
@@ -241,13 +241,13 @@ function surfaceFunction4(u, v, target) {
   }
 const surfaceGeometry4 = new THREE.ParametricGeometry(surfaceFunction4, 50, 10);
 const mesh4 = new THREE.Mesh(surfaceGeometry4, material4);
-scene.add(mesh4);
+//scene.add(mesh4);
 
 const form = new THREE.PlaneGeometry(15,20);
 
 const boxgeometry = new THREE.BoxGeometry(5,4,4);
 const box = new THREE.Mesh(boxgeometry, material_box);
-box.position.z=-1.5;
+box.position.z=0.5;
 box.position.y=2;
 box.position.x=-0.5;
 
@@ -270,7 +270,7 @@ scene.add( corteAB );
 scene.add( corteX );
 scene.add( corteB );*/
 //scene.add(model);
-scene.add( box );
+//scene.add( box );
 
 // Configurando o raio para interações do mouse
 const raycaster = new THREE.Raycaster();
@@ -288,7 +288,7 @@ const planeMaterial1 = new THREE.MeshBasicMaterial({ color: 0xFF0000, side: THRE
 const plane1 = new THREE.Mesh(planeGeometry1, planeMaterial1);
 plane1.rotation.x = grausParaRadianos(90);
 plane1.position.set(-2.5, 0, 1.5);
-//scene.add(plane1)
+scene.add(plane1)
 
 
 // Criando um plano no y=0
@@ -314,7 +314,7 @@ function onMouseClick(event) {
     // Verifica se há interseções e imprime as coordenadas do ponto selecionado
     if (intersects.length > 0) {
         const selectedPoint = intersects[0].point;
-        //console.log('Coordenadas do ponto selecionado:', selectedPoint.x, selectedPoint.y, selectedPoint.z);
+        console.log('Coordenadas do ponto selecionado:', selectedPoint.x, 0, selectedPoint.z);
     }
 }
 
@@ -331,8 +331,8 @@ x3.add(mesh2, { label: 'Corte2'});
 x3.add(mesh3, { label: 'Corte3'});
 x3.add(mesh4, { label: 'Corte4'});
 x3.add(predio, {label: 'Prédio'});*/
-x3.add(box, { label: 'Box'});
-//x3.add(plane2, { label: 'Corte'});
+//x3.add(box, { label: 'Box'});
+x3.add(plane1, { label: 'Corte'});
 
 teste1 = checkCollision(box, mesh1);
 teste2 = checkCollision(box, mesh2);

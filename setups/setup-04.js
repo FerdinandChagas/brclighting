@@ -21,9 +21,10 @@ const camera = new THREE.PerspectiveCamera(
     50, options.width / options.height
 );
 
-camera.position.x = 8;
-camera.position.y = 18.18;
-camera.position.z = 2.6;
+camera.position.x = 0;
+camera.position.y = 20;
+camera.position.z = 0;
+camera.lookAt(0,0,0);
 
 const light = new THREE.AmbientLight(0xffffff, 4.8);
 
