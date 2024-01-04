@@ -80,7 +80,7 @@ const material = new THREE.MeshLambertMaterial(
 
 const material1 = new THREE.MeshLambertMaterial(
     { 
-        color: 0x12127d,
+        color: 0x12ff7d,
         side: THREE.DoubleSide,
         transparent: true, 
         opacity: 0.6, 
@@ -150,8 +150,7 @@ function adicionarCorte( raio, dpi, h, graus){
     const points = [];
     let hcer = calculaHCE(h, dpi, raio);
     let dcer = calculaDPCE(dpi, raio, hcer);
-    //console.log("hcer = "+hcer);
-    //console.log("dcer = "+dcer);
+
     let radianos = (graus * Math.PI) / 180;
     for ( let d = 0.0; d <= dpi; d=d+0.1 ) {
         cp = calcularPontos(d,raio, dpi, hcer, dcer, h);
@@ -160,88 +159,86 @@ function adicionarCorte( raio, dpi, h, graus){
             let v3_temp = new THREE.Vector3(v2_temp.x, v2_temp.y, 0);
             v3_temp.applyAxisAngle(new THREE.Vector3(0,1,0), radianos)
             points.push(v3_temp);
-            //console.log(cp);
         } 
     }
     
     return points;
 }
 
-const curve1 = new THREE.CatmullRomCurve3();
-curve1.points = adicionarCorte(45, 9.5, 7, 39); // C
-const curve2 = new THREE.CatmullRomCurve3();
-curve2.points = adicionarCorte(45, 11.6, 7, 309); // B
+function adicionarCorteMod(raio, h, selectedPoint) {
+    const points = [];
+    const dpi = selectedPoint.length(); // Calcula a distância até a origem
+    let hcer = calculaHCE(h, dpi, raio); 
+    let dcer = calculaDPCE(dpi, raio, hcer);
 
-function surfaceFunction1(u, v, target) {
-    const point1 = curve1.getPointAt(u);
-    const point2 = curve2.getPointAt(u);
-  
-    target.set(
-      THREE.MathUtils.lerp(point1.x, point2.x, v),
-      THREE.MathUtils.lerp(point1.y, point2.y, v),
-      THREE.MathUtils.lerp(point1.z, point2.z, v)
-    );
-  }
-const surfaceGeometry1 = new THREE.ParametricGeometry(surfaceFunction1, 50, 10);
-const mesh1 = new THREE.Mesh(surfaceGeometry1, material1);
-//scene.add(mesh1);
+    for (let d = 0.0; d <= dpi; d += 0.1) {
+        const cp = calcularPontos(d, raio, dpi, hcer, dcer, h); 
+        if (cp >= 0) {
+            let v2_temp = new THREE.Vector2(d, cp);
+            let v3_temp = new THREE.Vector3(v2_temp.x, v2_temp.y, 0);
+
+            // Se um ponto selecionado pelo mouse for fornecido, ajusta o ponto de destino
+            if (selectedPoint) {
+                const angle = Math.atan2(selectedPoint.z, selectedPoint.x);
+                v3_temp.applyAxisAngle(new THREE.Vector3(0, 1, 0), -angle);
+            }
+
+            points.push(v3_temp);
+        }
+    }
+
+    return points;
+}
+
+function criarMesh(curve1, curve2, material) {
+    function surfaceFunction1(u, v, target) {
+        const point1 = curve1.getPointAt(u);
+        const point2 = curve2.getPointAt(u);
+
+        target.set(
+            THREE.MathUtils.lerp(point1.x, point2.x, v),
+            THREE.MathUtils.lerp(point1.y, point2.y, v),
+            THREE.MathUtils.lerp(point1.z, point2.z, v)
+        );
+    }
+
+    const surfaceGeometry = new THREE.ParametricGeometry(surfaceFunction1, 50, 10);
+    const mesh = new THREE.Mesh(surfaceGeometry, material);
+
+    return mesh;
+}
+
+const curve1 = new THREE.CatmullRomCurve3();
+ponto1 = new THREE.Vector3(7, 0, -5.5);
+curve1.points = adicionarCorteMod(45, 7, ponto1); // C
+//curve1.points = adicionarCorte(45, 9.5, 7, 39); // C
+const curve2 = new THREE.CatmullRomCurve3();
+ponto2 = new THREE.Vector3(7, 0, 8.8);
+curve2.points = adicionarCorteMod(45, 7, ponto2); // B
+//curve2.points = adicionarCorte(45, 11.6, 7, 309); // B
+
+//scene.add(criarMesh(curve1, curve2, material2));
 
 const curve3 = new THREE.CatmullRomCurve3();
 curve3.points = adicionarCorte(45, 11.6, 7, 309); //B
 const curve4 = new THREE.CatmullRomCurve3();
 curve4.points = adicionarCorte(45, 15.5, 7, 216); //A
 
-function surfaceFunction2(u, v, target) {
-    const point1 = curve3.getPointAt(u);
-    const point2 = curve4.getPointAt(u);
-  
-    target.set(
-      THREE.MathUtils.lerp(point1.x, point2.x, v),
-      THREE.MathUtils.lerp(point1.y, point2.y, v),
-      THREE.MathUtils.lerp(point1.z, point2.z, v)
-    );
-  }
-const surfaceGeometry2 = new THREE.ParametricGeometry(surfaceFunction2, 50, 10);
-const mesh2 = new THREE.Mesh(surfaceGeometry2, material2);
-//scene.add(mesh2);
+//scene.add(criarMesh(curve3, curve4, material2));
 
 const curve5 = new THREE.CatmullRomCurve3();
 curve5.points = adicionarCorte(45, 15.5, 7, 216); // A
 const curve6 = new THREE.CatmullRomCurve3();
 curve6.points = adicionarCorte(45, 14, 7, 155);  // D
 
-function surfaceFunction3(u, v, target) {
-    const point1 = curve5.getPointAt(u);
-    const point2 = curve6.getPointAt(u);
-  
-    target.set(
-      THREE.MathUtils.lerp(point1.x, point2.x, v),
-      THREE.MathUtils.lerp(point1.y, point2.y, v),
-      THREE.MathUtils.lerp(point1.z, point2.z, v)
-    );
-  }
-const surfaceGeometry3 = new THREE.ParametricGeometry(surfaceFunction3, 50, 10);
-const mesh3 = new THREE.Mesh(surfaceGeometry3, material3);
-//scene.add(mesh3);
+//scene.add(criarMesh(curve5, curve6, material2));
 
 const curve7 = new THREE.CatmullRomCurve3();
 curve7.points = adicionarCorte(45, 14, 7, 155);  // D
 const curve8 = new THREE.CatmullRomCurve3();
 curve8.points = adicionarCorte(45, 9.5, 7, 39); // C
 
-function surfaceFunction4(u, v, target) {
-    const point1 = curve7.getPointAt(u);
-    const point2 = curve8.getPointAt(u);
-  
-    target.set(
-      THREE.MathUtils.lerp(point1.x, point2.x, v),
-      THREE.MathUtils.lerp(point1.y, point2.y, v),
-      THREE.MathUtils.lerp(point1.z, point2.z, v)
-    );
-  }
-const surfaceGeometry4 = new THREE.ParametricGeometry(surfaceFunction4, 50, 10);
-const mesh4 = new THREE.Mesh(surfaceGeometry4, material4);
-//scene.add(mesh4);
+//scene.add(criarMesh(curve7, curve8, material2));
 
 const form = new THREE.PlaneGeometry(15,20);
 
@@ -252,25 +249,7 @@ box.position.y=2;
 box.position.x=-0.5;
 
 
-//plane.rotation.x = Math.PI /2;
 
-/*const corteCD = adicionarCorte(45, 6, 7, 90);
-const corteD = adicionarCorte(45, 14, 7, 155);
-const corteAD = adicionarCorte(45, 12.6, 7, 180);
-const corteA = adicionarCorte(45, 15.5, 7, 216);
-const corteAB = adicionarCorte(45, 9, 7, 270);
-const corteX = adicionarCorte(45, 12.7, 7, 225);
-const corteB = adicionarCorte(45, 11.6, 7, 309);*/
-
-/*scene.add( corteCD );
-scene.add( corteD );
-scene.add( corteAD );
-scene.add( corteA );
-scene.add( corteAB );
-scene.add( corteX );
-scene.add( corteB );*/
-//scene.add(model);
-//scene.add( box );
 
 // Configurando o raio para interações do mouse
 const raycaster = new THREE.Raycaster();
@@ -299,6 +278,7 @@ const plane2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
 //plane2.position.set(-2.5, 4, 1.5);
 //scene.add(plane2)
 
+const alvos_cortes = [];
 // Função de clique do mouse
 function onMouseClick(event) {
     // Calcula as coordenadas do mouse em relação ao tamanho da janela
@@ -314,7 +294,10 @@ function onMouseClick(event) {
     // Verifica se há interseções e imprime as coordenadas do ponto selecionado
     if (intersects.length > 0) {
         const selectedPoint = intersects[0].point;
+        let temp = new THREE.Vector3(selectedPoint.x, 0, selectedPoint.z);
+        alvos_cortes.push(temp);
         console.log('Coordenadas do ponto selecionado:', selectedPoint.x, 0, selectedPoint.z);
+        console.log('Alvos:', alvos_cortes.length);
     }
 }
 
@@ -334,12 +317,12 @@ x3.add(predio, {label: 'Prédio'});*/
 //x3.add(box, { label: 'Box'});
 x3.add(plane1, { label: 'Corte'});
 
-teste1 = checkCollision(box, mesh1);
+/*teste1 = checkCollision(box, mesh1);
 teste2 = checkCollision(box, mesh2);
 teste3 = checkCollision(box, mesh3);
-teste4 = checkCollision(box, mesh4);
+teste4 = checkCollision(box, mesh4);*/
 
-if (teste1) {
+/*if (teste1) {
     // Handle collision here
     mesh1.material.color.set(0xff0000); // Change parametric mesh color on collision
 }
@@ -357,12 +340,25 @@ if (teste3) {
 if (teste4) {
     // Handle collision here
     mesh4.material.color.set(0xff0000); // Change parametric mesh color on collision
-}
+}*/
+
+let num_cortes = 0;
 
 renderer.setAnimationLoop(() => {
 
     x3.tick();
-    
+    if(alvos_cortes.length-num_cortes>=2){
+        const curveA = new THREE.CatmullRomCurve3();
+        curveA.points = adicionarCorteMod(45, 7, alvos_cortes[num_cortes]);  // D
+        console.log("Ponto A: ", alvos_cortes[num_cortes].x, alvos_cortes[num_cortes].y, alvos_cortes[num_cortes].z);
+        const curveB = new THREE.CatmullRomCurve3();
+        curveB.points = adicionarCorteMod(45, 7, alvos_cortes[num_cortes+1]); // C
+        console.log("Ponto B: ", alvos_cortes[num_cortes+1].x, alvos_cortes[num_cortes+1].y, alvos_cortes[num_cortes+1].z);
+
+        scene.add(criarMesh(curveA, curveB, material2));
+        console.log("Era para ter desenhado.");
+        num_cortes+=1
+    }
     x3.fps(() => {
         renderer.render(scene, camera)
     })
