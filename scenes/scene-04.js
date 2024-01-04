@@ -141,7 +141,7 @@ loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
     predio.position.z = 3.4;
     predio.position.x = -13.6;
     predio.scale.set(0.98, 0.98, 0.98);
-    //scene.add(predio);
+    scene.add(predio);
 });
 
 
@@ -258,14 +258,13 @@ raycaster.far = 100;
 const mouse = new THREE.Vector2();
 
 // Evento de clique do mouse
-window.addEventListener('click', onMouseClick);
-
+window.addEventListener('dblclick', onMouseDoubleClick);
 // Atualizações de tamanho da janela
 window.addEventListener('resize', onWindowResize);
 
 // Criando um plano no y=0
-const planeGeometry1 = new THREE.PlaneGeometry(40, 30);
-const planeMaterial1 = new THREE.MeshBasicMaterial({ color: 0xFF0000, side: THREE.DoubleSide, transparent: true, opacity: 0.4,});
+const planeGeometry1 = new THREE.PlaneGeometry(22, 17);
+const planeMaterial1 = new THREE.MeshBasicMaterial({ color: 0xFFFF00, side: THREE.DoubleSide, transparent: true, opacity: 0.2,});
 const plane1 = new THREE.Mesh(planeGeometry1, planeMaterial1);
 plane1.rotation.x = grausParaRadianos(90);
 plane1.position.set(-2.5, 0, 1.5);
@@ -282,7 +281,11 @@ const plane2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
 
 const alvos_cortes = [];
 // Função de clique do mouse
-function onMouseClick(event) {
+function onMouseDoubleClick(event) {
+    // Evite a duplicação do clique ao clicar em outros elementos
+    if (event.target !== renderer.domElement) {
+        return;
+    }
     // Calcula as coordenadas do mouse em relação ao tamanho da janela
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
