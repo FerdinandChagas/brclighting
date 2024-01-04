@@ -253,6 +253,8 @@ box.position.x=-0.5;
 
 // Configurando o raio para interações do mouse
 const raycaster = new THREE.Raycaster();
+raycaster.params.Points.threshold = 0.1;  // Ajustar o limite para detecção de pontos
+raycaster.far = 100;
 const mouse = new THREE.Vector2();
 
 // Evento de clique do mouse
@@ -262,7 +264,7 @@ window.addEventListener('click', onMouseClick);
 window.addEventListener('resize', onWindowResize);
 
 // Criando um plano no y=0
-const planeGeometry1 = new THREE.PlaneGeometry(20, 15);
+const planeGeometry1 = new THREE.PlaneGeometry(40, 30);
 const planeMaterial1 = new THREE.MeshBasicMaterial({ color: 0xFF0000, side: THREE.DoubleSide, transparent: true, opacity: 0.4,});
 const plane1 = new THREE.Mesh(planeGeometry1, planeMaterial1);
 plane1.rotation.x = grausParaRadianos(90);

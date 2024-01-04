@@ -9,17 +9,15 @@ const renderer = new THREE.WebGLRenderer(
 );
 
 renderer.setPixelRatio(window.devicePixelRatio)
-
-renderer.setSize(options.width, options.height);
+renderer.setSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+//renderer.setSize(options.width, options.height);
 
 document.querySelector(options.targetSelector).appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(options.backgroundColor);
 
-const camera = new THREE.PerspectiveCamera(
-    50, options.width / options.height
-);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 camera.position.x = 0;
 camera.position.y = 20;
