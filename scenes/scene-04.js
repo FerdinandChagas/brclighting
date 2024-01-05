@@ -68,6 +68,14 @@ function calcularPontos(d, raio, dp, hcer, dcer, h) {
     }
 }
 
+function createOrangeSphere(position) {
+    const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0xFFA500 }); // Laranja
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.position.copy(position); // Define a posição com base no Vector3 fornecido
+    scene.add(sphere);
+}
+
 const material = new THREE.MeshLambertMaterial(
     { 
         color: 0x12127d,
@@ -127,23 +135,35 @@ const material_box = new THREE.MeshLambertMaterial(
 );
 
 const loader = new THREE.STLLoader();
+//const loader = new THREE.GLTFLoader();
 
 let model = new THREE.Object3D();
 
 let predio = new  THREE.Object3D();
+
+/*loader.load( 'buildings/simple_building/scene.gltf', function ( gltf ) {
+    model = gltf.scene;
+    //model.scale.set(0.2,0.2,0.2);
+}, undefined, function ( error ) {
+    console.error( error );
+
+} );
+
+scene.add(model);*/
 
 loader.load('buildings/predio_georeferenciado.stl', (geometry) => {
     const material = new THREE.MeshLambertMaterial({ color: 0x141414, wireframe: false, }); // Cor do material
     const predio = new THREE.Mesh(geometry, material);
     predio.rotation.x = grausParaRadianos(-90);
     predio.rotation.z = grausParaRadianos(-68);
-    predio.position.y = -29.4;
-    predio.position.z = 3.4;
-    predio.position.x = -13.6;
+    predio.position.y = -29.45;
+    predio.position.z = 3.35;
+    predio.position.x = -13.55;
     predio.scale.set(0.98, 0.98, 0.98);
     scene.add(predio);
 });
 
+createOrangeSphere(new THREE.Vector3(0,7,0));
 
 
 function adicionarCorte( raio, dpi, h, graus){
@@ -272,12 +292,20 @@ scene.add(plane1)
 
 
 // Criando um plano no y=0
-const planeGeometry2 = new THREE.PlaneGeometry(20, 15);
-const planeMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00FF00, side: THREE.DoubleSide, transparent: false, opacity: 0.4,});
+const planeGeometry2 = new THREE.PlaneGeometry(30,20);
+const planeMaterial2 = new THREE.MeshBasicMaterial({ color: 0xFFDEAD, side: THREE.DoubleSide, transparent: true, opacity: 0.6,});
 const plane2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
 
 //plane2.position.set(-2.5, 4, 1.5);
-//scene.add(plane2)
+scene.add(plane2)
+
+// Criando um plano no y=0
+const planeGeometry3 = new THREE.PlaneGeometry(250, 250);
+const planeMaterial3 = new THREE.MeshBasicMaterial({ color: 0x005500, side: THREE.DoubleSide, transparent: false, opacity: 0.2,});
+const plane3 = new THREE.Mesh(planeGeometry3, planeMaterial3);
+plane3.rotation.x = grausParaRadianos(90);
+plane3.position.set(-2.5, -20, 1.5);
+scene.add(plane3)
 
 const alvos_cortes = [];
 // Função de clique do mouse
@@ -300,6 +328,7 @@ function onMouseDoubleClick(event) {
     if (intersects.length > 0) {
         const selectedPoint = intersects[0].point;
         let temp = new THREE.Vector3(selectedPoint.x, 0, selectedPoint.z);
+        createOrangeSphere(temp);
         alvos_cortes.push(temp);
         console.log('Coordenadas do ponto selecionado:', selectedPoint.x, 0, selectedPoint.z);
         console.log('Alvos:', alvos_cortes.length);
@@ -320,7 +349,7 @@ x3.add(mesh3, { label: 'Corte3'});
 x3.add(mesh4, { label: 'Corte4'});
 x3.add(predio, {label: 'Prédio'});*/
 //x3.add(box, { label: 'Box'});
-x3.add(plane1, { label: 'Corte'});
+x3.add(plane2, { label: 'Corte'});
 
 /*teste1 = checkCollision(box, mesh1);
 teste2 = checkCollision(box, mesh2);
